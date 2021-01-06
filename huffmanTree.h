@@ -18,20 +18,27 @@ class huffmanTree {
                 delete root;
             root = NULL;
         }
+        struct Code {
+            int n;
+            std::string characters;
+            std::string tree;
+            std::string text;
+        } code;
 
     private: 
         //encoding functions
         void populateQueue(std::string str);
         huffmanNode* makeTreeFromText(std::string str);
         void encodeText(std::string str);
-        void print(huffmanNode *n);
         void encodeTree(huffmanNode* active);
         void createTable(std::string path, huffmanNode* cur);
         void encodeMessage(std::string str);
+        void getCharacters(huffmanNode *n);
 
         //decoding functions
         void getDecodingData();
         void makeTreeFromCode();
+        void addCharactersToTree(huffmanNode *cur);
         void decodeMessage();
 
 
@@ -40,10 +47,12 @@ class huffmanTree {
             huffmanNode::compareNode> pQueue;
         std::map<char, std::string> table;
         huffmanNode *root;
-        int nLetters; // size of alphabet
-        std::string characters;
-        std::string encodedTree;
-        std::string encodedMessage;
+        int charCounter;
+
+       /* int nLetters; // size of alphabet */
+        /* std::string characters; */
+        /* std::string encodedTree; */
+        /* std::string encodedMessage; */
 };
 
 #endif

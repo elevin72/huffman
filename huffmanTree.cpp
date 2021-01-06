@@ -9,31 +9,33 @@ void huffmanTree::encode(std::string str) {
     root = makeTreeFromText(str); // based on queue
     createTable("", root);  // based on tree
     encodeMessage(str);     // based on table
-    encodedTree = ""; // critical to the correctness of the following line
+    code.tree = ""; // critical to the correctness of the following line
     encodeTree(root);  
-    // delete tree
+    getCharacters(root);
+    // by now all the data is packaged in struct code, don't need nodes anymore
+    delete root; 
 }
 
 void huffmanTree::print() {
-    std::cout << nLetters << '\n';
-    print(root);
-    std::cout << '\n' << encodedTree << '\n';
-    std::cout << encodedMessage << '\n';
+    std::cout << code.n << '\n';
+    std::cout << code.characters << '\n';
+    std::cout << code.tree << '\n';
+    std::cout << code.text << '\n';
 }
 
-void huffmanTree::print(huffmanNode *n) {
-    if (n != NULL) {
-        print(n->left);
-        if ( n->c )
-            std::cout << n->c;
-        print(n->right);
+void huffmanTree::getCharacters(huffmanNode *cur) {
+    if (cur != NULL) {
+        getCharacters(cur->left);
+        if ( cur->c )
+            code.characters += cur->c;
+        getCharacters(cur->right);
     }
 }
 
 void huffmanTree::populateQueue(std::string str) {
     int length, frequency;
     huffmanNode *newNode;
-    nLetters = 0;
+    code.n = 0;
     while (!str.empty()) {
         length = str.length();
         char c = str.at(0); // front?
@@ -47,13 +49,13 @@ void huffmanTree::populateQueue(std::string str) {
         frequency = length - str.length();
         newNode = new huffmanNode(c, frequency);
         pQueue.push(newNode);
-        ++nLetters;
+        ++code.n;
     }
 }
 
 huffmanNode* huffmanTree::makeTreeFromText(std::string str) {
     huffmanNode *newNode, *rootNode;
-    for (int i = 0; i < nLetters-1; ++i) {
+    for (int i = 0; i < code.n -1; ++i) {
         newNode = new huffmanNode('\0', 0);
         newNode->left = pQueue.top();
         pQueue.pop();
@@ -64,19 +66,19 @@ huffmanNode* huffmanTree::makeTreeFromText(std::string str) {
         pQueue.push(newNode);
     }
     rootNode = pQueue.top();
-    while (!pQueue.empty())
-        pQueue.pop();
+    /* while (!pQueue.empty()) */
+    /*     pQueue.pop(); */
     return rootNode;
 }
 
 void huffmanTree::encodeTree(huffmanNode* active) {
     if(active->left) {
-        encodedTree.push_back('0');
+        code.tree.push_back('0');
         encodeTree(active->left);
         encodeTree(active->right);
     }
     else {
-        encodedTree.push_back('1');
+        code.tree.push_back('1');
     }
 }
 
@@ -91,9 +93,9 @@ void huffmanTree::createTable(std::string path, huffmanNode* cur) {
 
 void huffmanTree::encodeMessage(std::string str) {
     std::string letter;
-    encodedMessage = "";
+    code.text = "";
     for (int i = 0; i < str.length(); ++i) {
-        encodedMessage += table[str.at(i)];
+        code.text += table[str.at(i)];
     }
 }
 
@@ -101,58 +103,81 @@ void huffmanTree::encodeMessage(std::string str) {
 void huffmanTree::decode() {
     getDecodingData();
     makeTreeFromCode();
+    charCounter = 0;
+    addCharactersToTree(root);
     decodeMessage();
+    std::cout << '\n';
 }
 
 void huffmanTree::getDecodingData() {
     std::cout << "enter n";
-    std::cin >> nLetters;
+    std::cin >> code.n;
     std::cout << "enter the letters";
     do {
-        std::cin >> characters;
-        if (characters.length() != nLetters)
+        std::cin >> code.characters;
+        if (code.characters.length() != code.n)
             std::cout << "Size of alphabet must match number of characters!\n";
         else
             break;
     } while (true);
     std::cout << "enter the encoded structure";
     do {
-        std::cin >> encodedTree;
-        if (encodedTree.length() != (2*nLetters)-1)
+        std::cin >> code.tree;
+        if (code.tree.length() != (2*code.n)-1)
             std::cout << "size of tree must be 2n-1 !\n";
         else 
             break;
     } while (true);
     std::cout << "enter the encoded text";
-    std::cin >> encodedMessage;
+    std::cin >> code.text;
 }
 
 void huffmanTree::makeTreeFromCode() {
-    huffmanNode *newNode = new huffmanNode('\0', 0);
-    huffmanNode *active;
-    buildTree(root, 0);
-
-
+    root = new huffmanNode('\0', 0);
+    huffmanNode *active = root, *temp;
+    for (int i = 0; i < code.tree.length(); ++i) {
+        if (code.tree.at(i) == '0') {
+            // create 2 new nodes
+            active->left = new huffmanNode;
+            active->right = new huffmanNode;
+            active->left->parent = active;
+            active->right->parent = active;
+            active = active->left;
+        }
+        else {
+            do {
+                temp = active;
+                active = active->parent;
+            } while ( active && temp == active->right) ;
+            if (!active)
+                continue;
+            active = active->right;
+        }
+    }
 }
 
-void huffmanTree::buildTree(huffmanNode *active, huffmanNode *prev, int i) {
-    if (active->left) {
 
-    }
-    if (!encodedTree.at(i)) {
-        // construct 2 nodes, insert them and make active = left one
-        
-    }
-    else {
-        // get first right child of ancestor
-
+void huffmanTree::addCharactersToTree(huffmanNode *cur) {
+    if (cur != NULL) {
+        addCharactersToTree(cur->left);
+        if (!cur->left)
+            cur->c = code.characters.at(charCounter++);
+        addCharactersToTree(cur->right);
     }
 }
 
 void huffmanTree::decodeMessage() {
-    huffmanNode *cur = root;
-    for (int i = 0; i < encodedMessage.length(); ++i) {
-
+    huffmanNode *cur;
+    int i = 0;
+    while (i < code.text.length()){
+        cur = root;
+        while (cur->left) {
+            if (code.text.at(i) == '0')
+                cur = cur->left;
+            else
+                cur = cur->right;
+            ++i;
+        }
+        std::cout << cur->c;
     }
-
 }

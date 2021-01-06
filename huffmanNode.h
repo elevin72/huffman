@@ -6,6 +6,7 @@
 /* class compareNode; */ //is this necesary?
 class huffmanNode {
     public: 
+        huffmanNode();
         huffmanNode(char _c, int _frequency);
         ~huffmanNode();
     private:
@@ -13,6 +14,7 @@ class huffmanNode {
         int frequency;
         huffmanNode *right;
         huffmanNode *left;
+        huffmanNode *parent;
 
         friend class compareNode;
         friend class huffmanTree;
