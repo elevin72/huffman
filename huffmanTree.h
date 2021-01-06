@@ -8,6 +8,7 @@
 class huffmanTree {
     public:
         void encode(std::string str);
+        void decode();
         void print();
         huffmanTree() {
             root = NULL;
@@ -19,23 +20,30 @@ class huffmanTree {
         }
 
     private: 
-        void fillPQueue(std::string str);
-        huffmanNode* constructCode(std::string str);
+        //encoding functions
+        void populateQueue(std::string str);
+        huffmanNode* makeTreeFromText(std::string str);
         void encodeText(std::string str);
         void print(huffmanNode *n);
         void encodeTree(huffmanNode* active);
         void createTable(std::string path, huffmanNode* cur);
         void encodeMessage(std::string str);
 
+        //decoding functions
+        void getDecodingData();
+        void makeTreeFromCode();
+        void decodeMessage();
+
+
         std::priority_queue<huffmanNode*, 
             std::vector<huffmanNode*>, 
             huffmanNode::compareNode> pQueue;
         std::map<char, std::string> table;
         huffmanNode *root;
-        std::string characters;
-        std::string encodedMessage;
-        std::string encodedTree;
         int nLetters; // size of alphabet
+        std::string characters;
+        std::string encodedTree;
+        std::string encodedMessage;
 };
 
 #endif

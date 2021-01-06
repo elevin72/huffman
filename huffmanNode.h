@@ -6,36 +6,23 @@
 /* class compareNode; */ //is this necesary?
 class huffmanNode {
     public: 
-        huffmanNode(char _c, int _frequency) {
-            c = _c;
-            frequency = _frequency;
-            right = left = NULL;
-        }
-        ~huffmanNode() {
-            if (left) {
-                delete left;
-                left = NULL;
-            }
-            if (right) {
-                delete right;
-                right = NULL;
-            }
-        }
+        huffmanNode(char _c, int _frequency);
+        ~huffmanNode();
     private:
-    char c;
-    int frequency;
-    huffmanNode *right;
-    huffmanNode *left;
+        char c;
+        int frequency;
+        huffmanNode *right;
+        huffmanNode *left;
 
-    friend class compareNode;
-    friend class huffmanTree;
-    
-    class compareNode {
-        public: 
-            bool operator()(huffmanNode* const & n1, huffmanNode* const & n2) {
-                return n1->frequency > n2->frequency;
-            }
-    };
+        friend class compareNode;
+        friend class huffmanTree;
+
+        class compareNode {
+            public: 
+                bool operator()(huffmanNode* const & n1, huffmanNode* const & n2) {
+                    return n1->frequency > n2->frequency;
+                }
+        };
     
 };
 
