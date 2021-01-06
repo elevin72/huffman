@@ -3,6 +3,7 @@
 
 #include "huffmanNode.h"
 #include <queue>
+#include <map>
 
 class huffmanTree {
     public:
@@ -22,13 +23,18 @@ class huffmanTree {
         huffmanNode* constructCode(std::string str);
         void encodeText(std::string str);
         void print(huffmanNode *n);
-        void encodeTree(std::string str);
+        void encodeTree(huffmanNode* active);
+        void createTable(std::string path, huffmanNode* cur);
+        void encodeMessage(std::string str);
 
         std::priority_queue<huffmanNode*, 
             std::vector<huffmanNode*>, 
-            huffmanNode::compareNode > pQueue;
+            huffmanNode::compareNode> pQueue;
+        std::map<char, std::string> table;
         huffmanNode *root;
         std::string characters;
+        std::string encodedMessage;
+        std::string encodedTree;
         int nLetters; // size of alphabet
 };
 
