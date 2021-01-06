@@ -66,8 +66,6 @@ huffmanNode* huffmanTree::makeTreeFromText(std::string str) {
         pQueue.push(newNode);
     }
     rootNode = pQueue.top();
-    /* while (!pQueue.empty()) */
-    /*     pQueue.pop(); */
     return rootNode;
 }
 
@@ -99,13 +97,13 @@ void huffmanTree::encodeMessage(std::string str) {
     }
 }
 
-
 void huffmanTree::decode() {
     getDecodingData();
     makeTreeFromCode();
     charCounter = 0;
     addCharactersToTree(root);
     decodeMessage();
+    delete root;
     std::cout << '\n';
 }
 
@@ -155,7 +153,6 @@ void huffmanTree::makeTreeFromCode() {
         }
     }
 }
-
 
 void huffmanTree::addCharactersToTree(huffmanNode *cur) {
     if (cur != NULL) {
