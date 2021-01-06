@@ -6,6 +6,7 @@ huffmanNode::huffmanNode() {
     right = left = parent = NULL;
 }
 
+// not sure why constructor overloading wasn't working
 huffmanNode::huffmanNode(char _c, int _frequency) 
     : c(_c), frequency(_frequency) {
     right = left = parent = NULL;
