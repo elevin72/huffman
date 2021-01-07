@@ -7,14 +7,14 @@
 
 class huffmanTree {
     public:
-        huffmanTree() { root = NULL; }
+        huffmanTree(){}
         ~huffmanTree();
         void encode(std::string str);
         void decode();
-        void print();
 
     private: 
         //encoding functions
+        void clear();
         void populateQueue(std::string str);
         huffmanNode* makeTreeFromText(std::string str);
         void encodeTree(huffmanNode* active);
@@ -27,6 +27,8 @@ class huffmanTree {
         void makeTreeFromCode();
         void addCharactersToTree(huffmanNode *cur);
         void decodeText();
+
+        void print();
 
         std::priority_queue<huffmanNode*, 
             std::vector<huffmanNode*>, 

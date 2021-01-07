@@ -1,3 +1,9 @@
+/*
+ * Eli Levin
+ * Huffman Trees
+ * Homework 4
+ * Data Structures 2
+ */
 #include <iostream>
 #include <queue>
 #include <list>
@@ -12,7 +18,7 @@ int main()
     string word;
 
 	huffmanTree t;
-	cout << "enter 1 to encode a text\n";
+	cout << " enter 1 to encode a text\n";
 	cout << "enter 2 to decode a text\n";
 	cout << "enter 3 to exit\n";
 

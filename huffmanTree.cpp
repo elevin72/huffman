@@ -12,19 +12,34 @@ huffmanTree::~huffmanTree() {
 void huffmanTree::encode(std::string str) {
     //each line in this function does/creates something necessary for the next line
     //all the data being created/gathered is getting stored in the code struct
+    clear();
     populateQueue(str);
     root = makeTreeFromText(str); // based on queue
     createTable("", root);  // based on tree
     encodeText(str);     // based on table
-    code.tree = ""; // critical to the correctness of the following line
+    /* code.tree = ""; // critical to the correctness of the following line */
     encodeTree(root);  
     getCharacters(root);
     // by now all the data is packaged in 'code', don't need nodes anymore
     delete root; 
     root = NULL;
+    print();
+}
+
+void huffmanTree::clear() {
+    root = NULL;
+    charCounter = 0;
+    code.n = 0;
+    code.characters = "";
+    code.tree = "";
+    code.text = "";
+    table.clear();
+    while (!pQueue.empty()) 
+        pQueue.pop();
 }
 
 void huffmanTree::print() {
+    std::cout << "The encoded string is:\n";
     std::cout << code.n << '\n';
     std::cout << code.characters << '\n';
     std::cout << code.tree << '\n';
@@ -64,8 +79,7 @@ huffmanNode* huffmanTree::makeTreeFromText(std::string str) {
         newNode->c = '\0';
         pQueue.push(newNode);
     }
-    rootNode = pQueue.top();
-    return rootNode;
+    return pQueue.top();
 }
 
 void huffmanTree::encodeTree(huffmanNode* active) {
@@ -90,7 +104,7 @@ void huffmanTree::createTable(std::string path, huffmanNode* cur) {
 
 void huffmanTree::encodeText(std::string str) {
     std::string letter;
-    code.text = "";
+    /* code.text = ""; */
     for (int i = 0; i < str.length(); ++i) {
         code.text += table[str.at(i)];
     }
@@ -110,6 +124,7 @@ void huffmanTree::decode() {
     makeTreeFromCode();
     charCounter = 0;
     addCharactersToTree(root);
+    std::cout << "the decoded string is: ";
     decodeText();
     delete root;
     root = NULL;
@@ -117,9 +132,9 @@ void huffmanTree::decode() {
 }
 
 void huffmanTree::getDecodingData() {
-    std::cout << "enter n";
+    std::cout << "enter n ";
     std::cin >> code.n;
-    std::cout << "enter the letters";
+    std::cout << "enter the letters ";
     do {
         std::cin >> code.characters;
         if (code.characters.length() != code.n)
@@ -127,7 +142,7 @@ void huffmanTree::getDecodingData() {
         else
             break;
     } while (true);
-    std::cout << "enter the encoded structure";
+    std::cout << "enter the encoded structure ";
     do {
         std::cin >> code.tree;
         if (code.tree.length() != (2*code.n)-1)
@@ -135,7 +150,7 @@ void huffmanTree::getDecodingData() {
         else 
             break;
     } while (true);
-    std::cout << "enter the encoded text";
+    std::cout << "enter the encoded text ";
     std::cin >> code.text;
 }
 
